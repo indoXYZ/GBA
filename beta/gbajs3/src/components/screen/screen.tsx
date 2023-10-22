@@ -4,6 +4,7 @@ import { Rnd } from 'react-rnd';
 import { styled, useTheme } from 'styled-components';
 
 import { EmulatorContext } from '../../context/emulator/emulator.tsx';
+import { ControlPanelLandscapeCollapsedWidth } from '../controls/control-panel.tsx';
 import { NavigationMenuWidth } from '../navigation-menu/navigation-menu.tsx';
 import { GripperHandle } from '../shared/gripper-handle.tsx';
 
@@ -22,7 +23,7 @@ const RenderCanvas = styled.canvas<RenderCanvasProps>`
 
   ${({ $pixelated = false }) =>
     $pixelated &&
-    `image-rendering: pixelated !important;
+    `image-rendering: pixelated;
     `}
 `;
 
@@ -34,18 +35,33 @@ const ScreenWrapper = styled(Rnd)`
   @media ${({ theme }) => theme.isLargerThanPhone} {
     width: calc(100dvw - ${NavigationMenuWidth + 25}px);
   }
+
+  @media ${({ theme }) => theme.isMobileLandscape} {
+    width: auto;
+    height: 100dvh;
+  }
+
+  @media ${({ theme }) => theme.isShortMobileLandscape} {
+    height: auto;
+    width: calc(100dvw - ${ControlPanelLandscapeCollapsedWidth}px);
+  }
 `;
 
 export const Screen = () => {
   const theme = useTheme();
   const [hasDraggedOrResized, setHasDraggedOrResized] = useState(false);
   const isLargerThanPhone = useMediaQuery(theme.isLargerThanPhone);
+  const isMobileLandscape = useMediaQuery(theme.isMobileLandscape);
   const screenWrapperRef = useRef<Rnd>(null);
   const canvasRef = useRef(null);
   const { setCanvas, areItemsDraggable, areItemsResizable } =
     useContext(EmulatorContext);
-  const screenWrapperXStart = isLargerThanPhone ? NavigationMenuWidth + 10 : 0;
-  const screenWrapperYStart = isLargerThanPhone ? 15 : 0;
+  const screenWrapperXStart = isMobileLandscape
+    ? ControlPanelLandscapeCollapsedWidth
+    : isLargerThanPhone
+    ? NavigationMenuWidth + 10
+    : 0;
+  const screenWrapperYStart = isLargerThanPhone && !isMobileLandscape ? 15 : 0;
 
   useEffect(() => {
     if (screenWrapperRef.current && !hasDraggedOrResized) {
@@ -80,13 +96,13 @@ export const Screen = () => {
         topLeft: { marginTop: '15px', marginLeft: '15px' }
       }}
       default={{
-        x: isLargerThanPhone ? screenWrapperXStart : 0,
-        y: isLargerThanPhone ? screenWrapperYStart : 0,
+        x: screenWrapperXStart,
+        y: screenWrapperYStart,
         width: 'auto',
         height: 'auto'
       }}
       // initial width needs to be controlled from css
-      size={{ width: '', height: 'auto' }}
+      size={{ width: '', height: '' }}
       lockAspectRatio={3 / 2}
       onResizeStart={() => setHasDraggedOrResized(true)}
       onDragStart={() => setHasDraggedOrResized(true)}

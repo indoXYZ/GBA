@@ -4,7 +4,7 @@ declare module 'styled-components' {
   export interface DefaultTheme {
     isLargerThanPhone: string;
     isMobileLandscape: string;
-    isMobilePortrait: string;
+    isShortMobileLandscape: string;
     isMobileWithUrlBar: string;
     aliceBlue1: string;
     aliceBlue2: string;

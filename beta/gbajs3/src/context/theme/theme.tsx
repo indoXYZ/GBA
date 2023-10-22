@@ -4,9 +4,9 @@ export const GbaDarkTheme: DefaultTheme = {
   // media queries
   isLargerThanPhone: 'only screen and (min-width: 600px)',
   isMobileLandscape:
-    'only screen and (max-height: 1000px) and (max-width: 1000px) and (orientation: landscape)',
-  isMobilePortrait:
-    'only screen and (max-width: 1000px) and (orientation: portrait)',
+    'only screen and (max-height: 450px) and (max-width: 1000px) and (orientation: landscape)',
+  isShortMobileLandscape:
+    'only screen and (max-height: 450px) and (max-width: 700px) and (orientation: landscape)',
   isMobileWithUrlBar:
     'only screen and (max-height: 700px) and (orientation: portrait)',
   // css colors

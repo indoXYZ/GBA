@@ -42,11 +42,7 @@ type PanelControlButtonProps = {
 };
 
 const DragWrapper = styled(Rnd)`
-  width: 100dvw;
-
-  @media ${({ theme }) => theme.isLargerThanPhone} {
-    width: fit-content;
-  }
+  height: auto !important;
 `;
 
 const Panel = styled.ul`
@@ -129,6 +125,8 @@ const MutedMarkSlider = styled(Slider)`
   }
 `;
 
+export const ControlPanelLandscapeCollapsedWidth = 200;
+
 export const ControlPanel = ({ setExternalBounds }: ControlPanelProps) => {
   const {
     canvas,
@@ -142,6 +140,7 @@ export const ControlPanel = ({ setExternalBounds }: ControlPanelProps) => {
   const [isFastForwardOn, setIsFastForwardOn] = useState(false);
   const theme = useTheme();
   const isLargerThanPhone = useMediaQuery(theme.isLargerThanPhone);
+  const isMobileLandscape = useMediaQuery(theme.isMobileLandscape);
   const dragRef = useRef<Rnd>(null);
   const [isEmulatorPaused, setIsEmulatorPaused] = useState(false);
   const [currentEmulatorVolume, setCurrentEmulatorVolume] = useLocalStorage(
@@ -197,11 +196,12 @@ export const ControlPanel = ({ setExternalBounds }: ControlPanelProps) => {
       }}
       ref={dragRef}
       cancel=".noDrag"
-      size={{ width: '', height: 'auto' }}
       default={{
-        x: Math.floor(canvasBounds.left),
-        y: Math.floor(canvasBounds.bottom + dragWrapperPadding),
-        width: 'auto',
+        x: isMobileLandscape ? 0 : Math.floor(canvasBounds.left),
+        y: isMobileLandscape
+          ? 0
+          : Math.floor(canvasBounds.bottom + dragWrapperPadding),
+        width: isMobileLandscape ? ControlPanelLandscapeCollapsedWidth : 'auto',
         height: 'auto'
       }}
     >

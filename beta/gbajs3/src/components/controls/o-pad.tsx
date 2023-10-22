@@ -40,7 +40,6 @@ type KeyState = {
 
 const BackgroundContainer = styled.div<BackgroundContainerProps>`
   position: absolute;
-  background-color: red;
   border-radius: 50%;
   width: 12rem;
   height: 12rem;
@@ -61,6 +60,10 @@ const BackgroundContainer = styled.div<BackgroundContainerProps>`
     top: ${$initialPosition.top};
     left: ${$initialPosition.left};
     `};
+
+  @media ${({ theme }) => theme.isMobileLandscape} {
+    background: transparent;
+  }
 `;
 
 const CenterKnob = styled.div<CenterKnobProps>`

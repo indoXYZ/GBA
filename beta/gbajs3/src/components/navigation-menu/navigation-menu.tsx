@@ -86,8 +86,8 @@ const StyledMenuHeader = styled.h2`
   font-size: calc(1.3rem + 0.6vw);
   font-weight: 500;
   line-height: 1.2;
-  margin-top: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.menuHighlight};
@@ -120,6 +120,11 @@ const HamburgerButton = styled(ButtonBase)<ExpandableComponentProps>`
   min-height: 36px;
   min-width: 40px;
 
+  @media ${({ theme }) => theme.isMobileLandscape} {
+    bottom: 15px;
+    top: unset;
+  }
+
   ${({ $isExpanded = false }) =>
     !$isExpanded &&
     `left: -8px;
@@ -151,6 +156,7 @@ export const NavigationMenu = ({
   const { execute: executeLogout } = useLogout();
   const theme = useTheme();
   const isLargerThanPhone = useMediaQuery(theme.isLargerThanPhone);
+  const isMobileLandscape = useMediaQuery(theme.isMobileLandscape);
 
   const isMenuItemDisabledByAuth = !isAuthenticated();
 
@@ -416,7 +422,7 @@ export const NavigationMenu = ({
           />
         </MenuItemWrapper>
       </NavigationMenuWrapper>
-      {isExpanded && !isLargerThanPhone && (
+      {isExpanded && (!isLargerThanPhone || isMobileLandscape) && (
         <NavigationMenuClearDismiss
           aria-label="Menu Dismiss"
           onClick={() => {
