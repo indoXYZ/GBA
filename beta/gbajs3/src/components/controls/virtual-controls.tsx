@@ -52,6 +52,7 @@ export const VirtualControls = ({
   const isLargerThanPhone = useMediaQuery(theme.isLargerThanPhone);
   const isMobileWithUrlBar = useMediaQuery(theme.isMobileWithUrlBar);
   const isMobileLandscape = useMediaQuery(theme.isMobileLandscape);
+  const isShortMobileLandscape = useMediaQuery(theme.isShortMobileLandscape);
   const { emulator, isEmulatorRunning } = useContext(EmulatorContext);
   const { isAuthenticated } = useContext(AuthContext);
   const { setModalContent, setIsModalOpen } = useContext(ModalContext);
@@ -66,7 +67,7 @@ export const VirtualControls = ({
 
   const shouldShowVirtualButtonsAndDpad =
     (areVirtualControlsEnabled?.DPadAndButtons === undefined &&
-      !isLargerThanPhone) ||
+      (!isLargerThanPhone || isMobileLandscape || isShortMobileLandscape)) ||
     areVirtualControlsEnabled?.DPadAndButtons;
 
   // align with initial control panel positioning
