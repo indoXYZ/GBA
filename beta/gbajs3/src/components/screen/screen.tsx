@@ -37,7 +37,7 @@ const ScreenWrapper = styled(Rnd)`
   }
 
   @media ${({ theme }) => theme.isMobileLandscape} {
-    width: auto;
+    width: calc(100dvh * (3 / 2));
     height: 100dvh;
   }
 
