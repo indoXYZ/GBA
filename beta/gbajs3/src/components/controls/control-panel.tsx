@@ -41,6 +41,16 @@ type PanelControlButtonProps = {
   $shouldGrow?: boolean;
 };
 
+type PositionVariation = {
+  x: number;
+  y: number;
+};
+
+type SizeVariation = {
+  width: string | number;
+  height: string | number;
+};
+
 const DragWrapper = styled(Rnd)`
   height: auto !important;
 `;
@@ -147,6 +157,8 @@ export const ControlPanel = ({ setExternalBounds }: ControlPanelProps) => {
     'currentEmulatorVolume',
     1
   );
+  const dragWrapperPadding = isLargerThanPhone ? 5 : 0;
+  const canvasBounds = canvas?.parentElement?.getBoundingClientRect();
 
   useEffect(() => {
     if (canvas && dragRef?.current?.resizableElement?.current)
@@ -155,10 +167,47 @@ export const ControlPanel = ({ setExternalBounds }: ControlPanelProps) => {
       );
   }, [setExternalBounds, canvas]);
 
-  if (!canvas?.parentElement) return null;
+  useEffect(() => {
+    if (!dragRef?.current || !canvasBounds) return;
 
-  const dragWrapperPadding = isLargerThanPhone ? 5 : 0;
-  const canvasBounds = canvas.parentElement.getBoundingClientRect();
+    let positionVariation: PositionVariation = {
+      x: 0,
+      y: Math.floor(canvasBounds.bottom + dragWrapperPadding)
+    };
+
+    let sizeVariation: SizeVariation = {
+      width: 'auto',
+      height: 'auto'
+    };
+
+    if (isMobileLandscape) {
+      positionVariation = { x: 0, y: 0 };
+      sizeVariation = {
+        width: ControlPanelLandscapeCollapsedWidth,
+        height: 'auto'
+      };
+    } else if (isLargerThanPhone) {
+      positionVariation = {
+        x: Math.floor(canvasBounds.left),
+        y: Math.floor(canvasBounds.bottom + dragWrapperPadding)
+      };
+      sizeVariation = {
+        width: 'auto',
+        height: 'auto'
+      };
+    }
+
+    dragRef.current.updatePosition(positionVariation);
+    dragRef.current.updateSize(sizeVariation);
+  }, [
+    isLargerThanPhone,
+    isMobileLandscape,
+    dragRef,
+    canvasBounds,
+    dragWrapperPadding
+  ]);
+
+  if (!canvasBounds) return null;
 
   const togglePlay = () => {
     isEmulatorPaused ? emulator?.resume() : emulator?.pause();
