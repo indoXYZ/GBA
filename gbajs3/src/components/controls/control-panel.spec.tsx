@@ -7,7 +7,7 @@ import { renderWithContext } from '../../../test/render-with-context.tsx';
 import {
   emTimingRAF,
   emTimingSetTimeout,
-  emulatorIsFastForwardOnStorageKey,
+  emulatorFastForwardOnLocalStorageKey,
   emulatorVolumeLocalStorageKey
 } from '../../context/emulator/consts.tsx';
 import { GbaDarkTheme } from '../../context/theme/theme.tsx';
@@ -267,7 +267,7 @@ describe('<ControlPanel />', () => {
     });
 
     it('renders initial fast forward from storage', () => {
-      localStorage.setItem(emulatorIsFastForwardOnStorageKey, 'true');
+      localStorage.setItem(emulatorFastForwardOnLocalStorageKey, 'true');
 
       renderWithContext(<ControlPanel />);
 

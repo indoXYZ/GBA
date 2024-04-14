@@ -11,7 +11,7 @@ import {
 import {
   emTimingSetTimeout,
   emulatorGameNameLocalStorageKey,
-  emulatorIsFastForwardOnStorageKey,
+  emulatorFastForwardOnLocalStorageKey,
   emulatorKeyBindingsLocalStorageKey,
   emulatorVolumeLocalStorageKey
 } from './consts.tsx';
@@ -61,7 +61,7 @@ export const EmulatorProvider = ({ children }: EmulatorProviderProps) => {
     string | undefined
   >(emulatorGameNameLocalStorageKey);
   const [isFastForwardOn] = useLocalStorage(
-    emulatorIsFastForwardOnStorageKey,
+    emulatorFastForwardOnLocalStorageKey,
     false
   );
 

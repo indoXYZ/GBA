@@ -18,7 +18,7 @@ import { css, styled, useTheme } from 'styled-components';
 import {
   emTimingRAF,
   emTimingSetTimeout,
-  emulatorIsFastForwardOnStorageKey,
+  emulatorFastForwardOnLocalStorageKey,
   emulatorVolumeLocalStorageKey
 } from '../../context/emulator/consts.tsx';
 import { useEmulatorContext, useLayoutContext } from '../../hooks/context.tsx';
@@ -137,7 +137,7 @@ export const ControlPanel = () => {
     1
   );
   const [isFastForwardOn, setIsFastForwardOn] = useLocalStorage(
-    emulatorIsFastForwardOnStorageKey,
+    emulatorFastForwardOnLocalStorageKey,
     false
   );
 
