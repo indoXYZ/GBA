@@ -6,13 +6,14 @@ import {
 } from 'react-ios-pwa-prompt-ts';
 
 import { useModalContext } from './context.tsx';
-import {
-  UploadPublicExternalRomsModal,
-  type HasLoadedPublicRoms
-} from '../components/modals/public-external-roms.tsx';
+import { UploadPublicExternalRomsModal } from '../components/modals/public-external-roms.tsx';
 import { productTourLocalStorageKey } from '../components/product-tour/consts.tsx';
 
 import type { CompletedProductTourSteps } from '../components/product-tour/product-tour-intro.tsx';
+
+export type HasLoadedPublicRoms = {
+  [url: string]: string;
+};
 
 const loadedPublicRomsLocalStorageKey = 'hasLoadedPublicExternalRoms';
 
@@ -43,8 +44,15 @@ export const useShowLoadPublicRoms = () => {
       try {
         const url = new URL(romURL);
 
+        const storeResult = (statusMsg: string) => {
+          setHasLoadedPublicRoms((prevState) => ({
+            ...prevState,
+            [romURL]: statusMsg
+          }));
+        };
+
         setModalContent(
-          <UploadPublicExternalRomsModal url={url} raw={romURL} />
+          <UploadPublicExternalRomsModal url={url} storeResult={storeResult} />
         );
         setIsModalOpen(true);
       } catch (e) {

@@ -1,5 +1,4 @@
 import { Button } from '@mui/material';
-import { useLocalStorage } from '@uidotdev/usehooks';
 import { useEffect, useId, useState, type ReactNode } from 'react';
 import { BiError } from 'react-icons/bi';
 import { PacmanLoader } from 'react-spinners';
@@ -17,13 +16,9 @@ import { URLDisplay } from '../shared/url-display.tsx';
 
 import type { TourSteps } from '../product-tour/embedded-product-tour.tsx';
 
-export type HasLoadedPublicRoms = {
-  [url: string]: string;
-};
-
 type UploadPublicExternalRomsModalProps = {
   url: URL;
-  raw: string;
+  storeResult: (statusMsg: string) => void;
 };
 
 type RomLoadingIndicatorProps = {
@@ -32,8 +27,6 @@ type RomLoadingIndicatorProps = {
   children: ReactNode;
   indicator: ReactNode;
 };
-
-const loadedPublicRomsLocalStorageKey = 'hasLoadedPublicExternalRoms';
 
 const RomLoadingContainer = styled.div`
   display: flex;
@@ -66,16 +59,13 @@ const RomLoadingIndicator = ({
 
 export const UploadPublicExternalRomsModal = ({
   url,
-  raw
+  storeResult
 }: UploadPublicExternalRomsModalProps) => {
   const theme = useTheme();
   const { setIsModalOpen } = useModalContext();
   const { emulator } = useEmulatorContext();
   const [hasCompletedUpload, setHasCompletedUpload] = useState(false);
   const [currentRomURL, setCurrentRomURL] = useState<string | null>(null);
-  const [, setHasLoadedPublicRoms] = useLocalStorage<
-    { [url: string]: string } | undefined
-  >(loadedPublicRomsLocalStorageKey);
   const uploadRomButtonId = useId();
 
   const {
@@ -92,10 +82,7 @@ export const UploadPublicExternalRomsModal = ({
           emulator.filePaths().gamePath + '/' + externalRomFile.name
         );
         if (hasSucceeded) {
-          setHasLoadedPublicRoms((prevState) => ({
-            ...prevState,
-            [raw]: 'loaded'
-          }));
+          storeResult('loaded');
           setIsModalOpen(false);
         }
       };
@@ -104,14 +91,12 @@ export const UploadPublicExternalRomsModal = ({
       setHasCompletedUpload(true);
     }
   }, [
-    url,
-    raw,
     currentRomURL,
     emulator,
     externalRomFile,
     isExternalRomLoading,
-    setHasLoadedPublicRoms,
-    setIsModalOpen
+    setIsModalOpen,
+    storeResult
   ]);
 
   const tourSteps: TourSteps = [
@@ -172,10 +157,7 @@ export const UploadPublicExternalRomsModal = ({
         <Button
           variant="outlined"
           onClick={() => {
-            setHasLoadedPublicRoms((prevState) => ({
-              ...prevState,
-              [raw]: 'skipped'
-            }));
+            if (!externalRomLoadError) storeResult('skipped');
             setIsModalOpen(false);
           }}
         >
