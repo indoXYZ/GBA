@@ -23,6 +23,7 @@ import {
   PlusSquare,
   MinusSquare
 } from '../shared/action-box-icons.tsx';
+import { TextBreakWord } from '../shared/styled.tsx';
 
 import type { FileNode } from '../../emulator/mgba/mgba-emulator.tsx';
 
@@ -60,12 +61,6 @@ const LeafLabelWrapper = styled.div`
   gap: 10px;
   align-items: center;
   justify-content: space-between;
-
-  > p {
-    margin: 0;
-    word-wrap: break-word;
-    max-width: 100%;
-  }
 `;
 
 const IconSeparator = styled.div`
@@ -86,7 +81,7 @@ const EmulatorFS = ({
 
     const leafLabelNode = (
       <LeafLabelWrapper>
-        <p>{nodeName}</p>
+        <TextBreakWord>{nodeName}</TextBreakWord>
         <IconSeparator>
           <IconButton
             aria-label={`Download ${nodeName}`}

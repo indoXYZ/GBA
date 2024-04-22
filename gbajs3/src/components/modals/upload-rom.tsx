@@ -23,7 +23,8 @@ import {
   type TourSteps
 } from '../product-tour/embedded-product-tour.tsx';
 import { ErrorWithIcon } from '../shared/error-with-icon.tsx';
-import { CenteredTextContainer } from '../shared/styled.tsx';
+import { CenteredTextContainer, TextBreakWord } from '../shared/styled.tsx';
+import { URLDisplay } from '../shared/url-display.tsx';
 
 type InputProps = {
   romFile: File;
@@ -70,24 +71,19 @@ const RomLoadingContainer = styled.div`
   margin-bottom: 15px;
 `;
 
-const URLDisplay = styled.p`
-  word-wrap: break-word;
-  max-width: 100%;
-`;
-
 const RomLoadingIndicator = ({
   isLoading,
   currentRomURL,
   children,
   indicator
 }: RomLoadingIndicatorProps) => {
-  return isLoading ? (
+  return isLoading && currentRomURL ? (
     <RomLoadingContainer>
-      <URLDisplay>
+      <TextBreakWord>
         Loading rom from url:
         <br />
-        {currentRomURL}
-      </URLDisplay>
+      </TextBreakWord>
+      <URLDisplay url={new URL(currentRomURL)} />
       {indicator}
     </RomLoadingContainer>
   ) : (

@@ -190,7 +190,10 @@ describe('<UploadRomModal />', () => {
 
     const loadingSpinner = screen.getByText(/Loading rom from url:/);
     expect(loadingSpinner).toBeVisible();
-    expect(loadingSpinner).toHaveTextContent(`${testRomLocation}/good_rom.gba`);
+
+    const romLink = screen.getByRole('link');
+    expect(romLink).toBeInTheDocument();
+    expect(romLink).toHaveAttribute('href', `${testRomLocation}/good_rom.gba`);
 
     await waitForElementToBeRemoved(
       screen.queryByText(/Loading rom from url:/)
@@ -239,7 +242,10 @@ describe('<UploadRomModal />', () => {
 
     const loadingSpinner = screen.getByText(/Loading rom from url:/);
     expect(loadingSpinner).toBeVisible();
-    expect(loadingSpinner).toHaveTextContent(`${testRomLocation}/bad_rom.gba`);
+
+    const romLink = screen.getByRole('link');
+    expect(romLink).toBeInTheDocument();
+    expect(romLink).toHaveAttribute('href', `${testRomLocation}/bad_rom.gba`);
 
     await waitForElementToBeRemoved(
       screen.queryByText(/Loading rom from url:/)

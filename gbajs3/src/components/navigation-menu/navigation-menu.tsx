@@ -34,6 +34,7 @@ import {
   useModalContext
 } from '../../hooks/context.tsx';
 import { useLogout } from '../../hooks/use-logout.tsx';
+import { useShowLoadPublicRoms } from '../../hooks/use-show-load-public-roms.tsx';
 import { AboutModal } from '../modals/about.tsx';
 import { CheatsModal } from '../modals/cheats.tsx';
 import { ControlsModal } from '../modals/controls.tsx';
@@ -152,6 +153,8 @@ export const NavigationMenu = () => {
 
   const isMenuItemDisabledByAuth = !isAuthenticated();
   const hasApiLocation = !!import.meta.env.VITE_GBA_SERVER_LOCATION;
+
+  useShowLoadPublicRoms();
 
   return (
     <>
