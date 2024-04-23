@@ -18,7 +18,7 @@ export type HasLoadedPublicRoms = {
 const loadedPublicRomsLocalStorageKey = 'hasLoadedPublicExternalRoms';
 
 export const useShowLoadPublicRoms = () => {
-  const { setModalContent, setIsModalOpen } = useModalContext();
+  const { setModalContent, setIsModalOpen, isModalOpen } = useModalContext();
   const [hasLoadedPublicRoms, setHasLoadedPublicRoms] = useLocalStorage<
     HasLoadedPublicRoms | undefined
   >(loadedPublicRomsLocalStorageKey);
@@ -33,14 +33,16 @@ export const useShowLoadPublicRoms = () => {
   const params = new URLSearchParams(window?.location?.search);
   const romURL = params.get('romURL');
 
+  const shouldShowPublicRomModal =
+    romURL &&
+    !hasLoadedPublicRoms?.[romURL] &&
+    hasCompletedProductTourSteps?.hasCompletedProductTourIntro &&
+    iosPwaPrompt && // ensure install prompt has come first
+    !shouldShowPrompt &&
+    !isModalOpen;
+
   useEffect(() => {
-    if (
-      romURL &&
-      !hasLoadedPublicRoms?.[romURL] &&
-      hasCompletedProductTourSteps?.hasCompletedProductTourIntro &&
-      iosPwaPrompt && // ensure install prompt has come first
-      !shouldShowPrompt
-    ) {
+    if (shouldShowPublicRomModal) {
       try {
         const url = new URL(romURL);
 
@@ -52,7 +54,10 @@ export const useShowLoadPublicRoms = () => {
         };
 
         setModalContent(
-          <UploadPublicExternalRomsModal url={url} storeResult={storeResult} />
+          <UploadPublicExternalRomsModal
+            url={url}
+            onLoadOrDismiss={storeResult}
+          />
         );
         setIsModalOpen(true);
       } catch (e) {
@@ -65,12 +70,9 @@ export const useShowLoadPublicRoms = () => {
     }
   }, [
     romURL,
-    hasLoadedPublicRoms,
+    shouldShowPublicRomModal,
     setIsModalOpen,
     setModalContent,
-    hasCompletedProductTourSteps?.hasCompletedProductTourIntro,
-    setHasLoadedPublicRoms,
-    shouldShowPrompt,
-    iosPwaPrompt
+    setHasLoadedPublicRoms
   ]);
 };

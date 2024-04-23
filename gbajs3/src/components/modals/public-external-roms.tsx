@@ -18,7 +18,7 @@ import type { TourSteps } from '../product-tour/embedded-product-tour.tsx';
 
 type UploadPublicExternalRomsModalProps = {
   url: URL;
-  storeResult: (statusMsg: string) => void;
+  onLoadOrDismiss: (statusMsg: string) => void;
 };
 
 type RomLoadingIndicatorProps = {
@@ -59,7 +59,7 @@ const RomLoadingIndicator = ({
 
 export const UploadPublicExternalRomsModal = ({
   url,
-  storeResult
+  onLoadOrDismiss
 }: UploadPublicExternalRomsModalProps) => {
   const theme = useTheme();
   const { setIsModalOpen } = useModalContext();
@@ -82,7 +82,7 @@ export const UploadPublicExternalRomsModal = ({
           emulator.filePaths().gamePath + '/' + externalRomFile.name
         );
         if (hasSucceeded) {
-          storeResult('loaded');
+          onLoadOrDismiss('loaded');
           setIsModalOpen(false);
         }
       };
@@ -96,7 +96,7 @@ export const UploadPublicExternalRomsModal = ({
     externalRomFile,
     isExternalRomLoading,
     setIsModalOpen,
-    storeResult
+    onLoadOrDismiss
   ]);
 
   const tourSteps: TourSteps = [
@@ -157,7 +157,7 @@ export const UploadPublicExternalRomsModal = ({
         <Button
           variant="outlined"
           onClick={() => {
-            if (!externalRomLoadError) storeResult('skipped');
+            onLoadOrDismiss(externalRomLoadError ? 'skipped-error' : 'skipped');
             setIsModalOpen(false);
           }}
         >

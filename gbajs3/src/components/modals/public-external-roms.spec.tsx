@@ -12,7 +12,7 @@ import type { GBAEmulator } from '../../emulator/mgba/mgba-emulator.tsx';
 
 describe('<UploadPublicExternalRomsModal />', () => {
   it('uploads rom from external url', async () => {
-    const storeResultSpy = vi.fn();
+    const onLoadOrDismissSpy = vi.fn();
     const setIsModalOpenSpy = vi.fn();
     const uploadRomSpy: (file: File, cb?: () => void) => void = vi.fn(
       (_file, cb) => cb && cb()
@@ -43,7 +43,7 @@ describe('<UploadPublicExternalRomsModal />', () => {
     renderWithContext(
       <UploadPublicExternalRomsModal
         url={new URL(`${testRomLocation}/good_rom.gba`)}
-        storeResult={storeResultSpy}
+        onLoadOrDismiss={onLoadOrDismissSpy}
       />
     );
 
@@ -65,14 +65,15 @@ describe('<UploadPublicExternalRomsModal />', () => {
     expect(emulatorRunSpy).toHaveBeenCalledOnce();
     expect(emulatorRunSpy).toHaveBeenCalledWith('/games/good_rom.gba');
 
-    expect(storeResultSpy).toHaveBeenCalledOnce();
-    expect(storeResultSpy).toHaveBeenCalledWith('loaded');
+    expect(onLoadOrDismissSpy).toHaveBeenCalledOnce();
+    expect(onLoadOrDismissSpy).toHaveBeenCalledWith('loaded');
     expect(setIsModalOpenSpy).toHaveBeenCalledWith(false);
 
     expect(await screen.findByText('Upload complete!')).toBeVisible();
   });
 
   it('renders external rom error', async () => {
+    const onLoadOrDismissSpy = vi.fn();
     const uploadRomSpy: (file: File, cb?: () => void) => void = vi.fn(
       (_file, cb) => cb && cb()
     );
@@ -96,7 +97,7 @@ describe('<UploadPublicExternalRomsModal />', () => {
     renderWithContext(
       <UploadPublicExternalRomsModal
         url={new URL(`${testRomLocation}/bad_rom.gba`)}
-        storeResult={vi.fn}
+        onLoadOrDismiss={onLoadOrDismissSpy}
       />
     );
 
@@ -119,10 +120,17 @@ describe('<UploadPublicExternalRomsModal />', () => {
     expect(
       await screen.findByText('Loading rom from URL has failed')
     ).toBeVisible();
+
+    // click the close button
+    await userEvent.click(screen.getByText('Close', { selector: 'button' }));
+
+    // if dismissed here, should mark rom as skipped and error
+    expect(onLoadOrDismissSpy).toHaveBeenCalledOnce();
+    expect(onLoadOrDismissSpy).toHaveBeenCalledWith('skipped-error');
   });
 
   it('closes modal using the close button', async () => {
-    const storeResultSpy = vi.fn();
+    const onLoadOrDismissSpy = vi.fn();
     const setIsModalOpenSpy = vi.fn();
     const { useModalContext: original } = await vi.importActual<
       typeof contextHooks
@@ -136,7 +144,7 @@ describe('<UploadPublicExternalRomsModal />', () => {
     renderWithContext(
       <UploadPublicExternalRomsModal
         url={new URL(`${testRomLocation}/good_rom.gba`)}
-        storeResult={storeResultSpy}
+        onLoadOrDismiss={onLoadOrDismissSpy}
       />
     );
 
@@ -145,8 +153,9 @@ describe('<UploadPublicExternalRomsModal />', () => {
     expect(closeButton).toBeInTheDocument();
     await userEvent.click(closeButton);
 
-    expect(storeResultSpy).toHaveBeenCalledOnce();
-    expect(storeResultSpy).toHaveBeenCalledWith('skipped');
+    // marks rom as skipped
+    expect(onLoadOrDismissSpy).toHaveBeenCalledOnce();
+    expect(onLoadOrDismissSpy).toHaveBeenCalledWith('skipped');
     expect(setIsModalOpenSpy).toHaveBeenCalledWith(false);
   });
 
@@ -168,7 +177,7 @@ describe('<UploadPublicExternalRomsModal />', () => {
     renderWithContext(
       <UploadPublicExternalRomsModal
         url={new URL(`${testRomLocation}/good_rom.gba`)}
-        storeResult={vi.fn}
+        onLoadOrDismiss={vi.fn}
       />
     );
 

@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, renderHook } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 
 import { AuthProvider } from '../src/context/auth/auth.tsx';
@@ -9,16 +9,20 @@ import { GbaDarkTheme } from '../src/context/theme/theme.tsx';
 
 import type { ReactNode } from 'react';
 
-export const renderWithContext = (testNode: ReactNode) => {
-  return render(
-    <ThemeProvider theme={GbaDarkTheme}>
-      <AuthProvider>
-        <EmulatorProvider>
-          <LayoutProvider>
-            <ModalProvider>{testNode}</ModalProvider>
-          </LayoutProvider>
-        </EmulatorProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  );
-};
+const context = (children: ReactNode) => (
+  <ThemeProvider theme={GbaDarkTheme}>
+    <AuthProvider>
+      <EmulatorProvider>
+        <LayoutProvider>
+          <ModalProvider>{children}</ModalProvider>
+        </LayoutProvider>
+      </EmulatorProvider>
+    </AuthProvider>
+  </ThemeProvider>
+);
+
+export const renderWithContext = (testNode: ReactNode) =>
+  render(context(testNode));
+
+export const renderHookWithContext = (testHook: () => void) =>
+  renderHook(testHook, { wrapper: ({ children }) => context(children) });
